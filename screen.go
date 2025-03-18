@@ -84,6 +84,19 @@ func (e *Editor) drawLine(y int) {
 	}
 }
 
+func (e *Editor) drawCommandLine(message string) {
+	width, height := e.screen.Size()
+
+	for x := 0; x < width; x++ {
+		e.screen.SetContent(x, height-1, ' ', nil, tcell.StyleDefault.Background(tcell.ColorBlue))
+	}
+
+	for x, ch := range message {
+		e.screen.SetContent(x, height-1, ch, nil, tcell.StyleDefault.Background(tcell.ColorBlue).Foreground(tcell.ColorWhite))
+	}
+	e.screen.Show()
+}
+
 func (e *Editor) drawStatusBar(width int) {
 
 	leftStatus := fmt.Sprintf("MODE: %s", e.getMode())

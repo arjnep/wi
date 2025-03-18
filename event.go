@@ -46,6 +46,8 @@ func (e *Editor) handleKeyEvent(ev *tcell.EventKey) {
 			e.undo()
 		case 'r':
 			e.redo()
+		case ':':
+			e.commandMode()
 		}
 	} else if e.mode == MODE_EDIT {
 		if ev.Key() == tcell.KeyEscape {

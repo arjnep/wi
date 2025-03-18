@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"os"
 
 	"github.com/gdamore/tcell"
 )
@@ -20,6 +21,7 @@ type Editor struct {
 	clipboard []rune
 	undoStack []EditorState
 	redoStack []EditorState
+	filename  string
 }
 
 func InitEditor() *Editor {
@@ -32,7 +34,12 @@ func InitEditor() *Editor {
 		log.Fatalf("Error initializing screen: %v", err)
 	}
 
-	return &Editor{
+	var filename string
+	if len(os.Args) > 1 {
+		filename = os.Args[1]
+	}
+
+	editor := &Editor{
 		screen:    screen,
 		mode:      MODE_VIEW,
 		buffer:    [][]rune{[]rune{}},
@@ -41,11 +48,20 @@ func InitEditor() *Editor {
 		undoStack: []EditorState{},
 		redoStack: []EditorState{},
 	}
+
+	if filename != "" {
+		editor.filename = filename
+		editor.loadFile(filename)
+	}
+
+	return editor
 }
 
 func (e *Editor) Run() {
 	defer e.screen.Fini()
-	e.greet()
+	if e.filename == "" {
+		e.greet()
+	}
 	e.screen.Clear()
 
 	for {
